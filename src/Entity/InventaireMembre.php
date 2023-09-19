@@ -2,43 +2,37 @@
 
 namespace App\Entity;
 
-use App\Repository\MembreRepository;
+use App\Repository\InventaireMembreRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
-#[ORM\Entity(repositoryClass: MembreRepository::class)]
-class Membre
+#[ORM\Entity(repositoryClass: InventaireMembreRepository::class)]
+class InventaireMembre
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
     private ?int $id = null;
 
-    #[ORM\Column(length: 255)]
-    private ?string $Nom = null;
-
-    #[ORM\Column(length: 255)]
-    private ?string $Prenom = null;
-
-    #[ORM\OneToMany(mappedBy: 'Membre', targetEntity: Niveau::class)]
-    private Collection $Niveaux;
-
     #[ORM\OneToMany(mappedBy: 'Membre', targetEntity: Experience::class)]
     private Collection $Experiences;
+
+    #[ORM\OneToMany(mappedBy: 'membre', targetEntity: Niveau::class)]
+    private Collection $Niveaux;
+
+    #[ORM\OneToMany(mappedBy: 'membre', targetEntity: Objectif::class)]
+    private Collection $Objectifs;
 
     #[ORM\OneToMany(mappedBy: 'Membre', targetEntity: Projet::class)]
     private Collection $Projets;
 
-    #[ORM\OneToMany(mappedBy: 'Membre', targetEntity: Objectif::class)]
-    private Collection $Objectifs;
-
     public function __construct()
     {
-        $this->Niveaux = new ArrayCollection();
         $this->Experiences = new ArrayCollection();
-        $this->Projets = new ArrayCollection();
+        $this->Niveaux = new ArrayCollection();
         $this->Objectifs = new ArrayCollection();
+        $this->Projets = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -46,26 +40,32 @@ class Membre
         return $this->id;
     }
 
-    public function getNom(): ?string
+    /**
+     * @return Collection<int, Experience>
+     */
+    public function getExperiences(): Collection
     {
-        return $this->Nom;
+        return $this->Experiences;
     }
 
-    public function setNom(string $Nom): static
+    public function addExperience(Experience $experience): static
     {
-        $this->Nom = $Nom;
+        if (!$this->Experiences->contains($experience)) {
+            $this->Experiences->add($experience);
+            $experience->setMembre($this);
+        }
 
         return $this;
     }
 
-    public function getPrenom(): ?string
+    public function removeExperience(Experience $experience): static
     {
-        return $this->Prenom;
-    }
-
-    public function setPrenom(string $Prenom): static
-    {
-        $this->Prenom = $Prenom;
+        if ($this->Experiences->removeElement($experience)) {
+            // set the owning side to null (unless already changed)
+            if ($experience->getMembre() === $this) {
+                $experience->setMembre(null);
+            }
+        }
 
         return $this;
     }
@@ -101,29 +101,29 @@ class Membre
     }
 
     /**
-     * @return Collection<int, Experience>
+     * @return Collection<int, Objectif>
      */
-    public function getExperiences(): Collection
+    public function getObjectifs(): Collection
     {
-        return $this->Experiences;
+        return $this->Objectifs;
     }
 
-    public function addExperience(Experience $experience): static
+    public function addObjectif(Objectif $objectif): static
     {
-        if (!$this->Experiences->contains($experience)) {
-            $this->Experiences->add($experience);
-            $experience->setMembre($this);
+        if (!$this->Objectifs->contains($objectif)) {
+            $this->Objectifs->add($objectif);
+            $objectif->setMembre($this);
         }
 
         return $this;
     }
 
-    public function removeExperience(Experience $experience): static
+    public function removeObjectif(Objectif $objectif): static
     {
-        if ($this->Experiences->removeElement($experience)) {
+        if ($this->Objectifs->removeElement($objectif)) {
             // set the owning side to null (unless already changed)
-            if ($experience->getMembre() === $this) {
-                $experience->setMembre(null);
+            if ($objectif->getMembre() === $this) {
+                $objectif->setMembre(null);
             }
         }
 
@@ -154,36 +154,6 @@ class Membre
             // set the owning side to null (unless already changed)
             if ($projet->getMembre() === $this) {
                 $projet->setMembre(null);
-            }
-        }
-
-        return $this;
-    }
-
-    /**
-     * @return Collection<int, Objectif>
-     */
-    public function getObjectifs(): Collection
-    {
-        return $this->Objectifs;
-    }
-
-    public function addObjectif(Objectif $objectif): static
-    {
-        if (!$this->Objectifs->contains($objectif)) {
-            $this->Objectifs->add($objectif);
-            $objectif->setMembre($this);
-        }
-
-        return $this;
-    }
-
-    public function removeObjectif(Objectif $objectif): static
-    {
-        if ($this->Objectifs->removeElement($objectif)) {
-            // set the owning side to null (unless already changed)
-            if ($objectif->getMembre() === $this) {
-                $objectif->setMembre(null);
             }
         }
 

@@ -13,17 +13,14 @@ class Projet
     #[ORM\Column]
     private ?int $id = null;
 
-    #[ORM\Column(length: 1500)]
+    #[ORM\Column(length: 255)]
     private ?string $Nom = null;
 
-    #[ORM\Column(length: 1500)]
+    #[ORM\Column(length: 255, nullable: true)]
     private ?string $Description = null;
 
-    #[ORM\Column(length: 255)]
-    private ?string $Statut = null;
-
     #[ORM\ManyToOne(inversedBy: 'Projets')]
-    private ?Membre $Membre = null;
+    private ?InventaireMembre $Membre = null;
 
     public function getId(): ?int
     {
@@ -47,31 +44,19 @@ class Projet
         return $this->Description;
     }
 
-    public function setDescription(string $Description): static
+    public function setDescription(?string $Description): static
     {
         $this->Description = $Description;
 
         return $this;
     }
 
-    public function getStatut(): ?string
-    {
-        return $this->Statut;
-    }
-
-    public function setStatut(string $Statut): static
-    {
-        $this->Statut = $Statut;
-
-        return $this;
-    }
-
-    public function getMembre(): ?Membre
+    public function getMembre(): ?InventaireMembre
     {
         return $this->Membre;
     }
 
-    public function setMembre(?Membre $Membre): static
+    public function setMembre(?InventaireMembre $Membre): static
     {
         $this->Membre = $Membre;
 

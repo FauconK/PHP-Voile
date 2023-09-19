@@ -14,30 +14,30 @@ class Experience
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
-    private ?string $Support = null;
+    private ?string $Nom = null;
 
-    #[ORM\Column(length: 1500, nullable: true)]
+    #[ORM\Column(length: 255, nullable: true)]
     private ?string $Description = null;
 
-    #[ORM\Column(length: 255)]
-    private ?string $Date = null;
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $Support = null;
 
     #[ORM\ManyToOne(inversedBy: 'Experiences')]
-    private ?Membre $Membre = null;
+    private ?InventaireMembre $Membre = null;
 
     public function getId(): ?int
     {
         return $this->id;
     }
 
-    public function getSupport(): ?string
+    public function getNom(): ?string
     {
-        return $this->Support;
+        return $this->Nom;
     }
 
-    public function setSupport(string $Support): static
+    public function setNom(string $Nom): static
     {
-        $this->Support = $Support;
+        $this->Nom = $Nom;
 
         return $this;
     }
@@ -54,24 +54,24 @@ class Experience
         return $this;
     }
 
-    public function getDate(): ?string
+    public function getSupport(): ?string
     {
-        return $this->Date;
+        return $this->Support;
     }
 
-    public function setDate(string $Date): static
+    public function setSupport(?string $Support): static
     {
-        $this->Date = $Date;
+        $this->Support = $Support;
 
         return $this;
     }
 
-    public function getMembre(): ?Membre
+    public function getMembre(): ?InventaireMembre
     {
         return $this->Membre;
     }
 
-    public function setMembre(?Membre $Membre): static
+    public function setMembre(?InventaireMembre $Membre): static
     {
         $this->Membre = $Membre;
 
